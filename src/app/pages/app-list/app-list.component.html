@@ -113,9 +113,7 @@
         <div
           class="category-chip"
           [class.active]="selectedCategory === 'all'"
-          [routerLink]="['/', currentLang]"
-          [routerLinkActive]="'active'"
-          [routerLinkActiveOptions]="{ exact: true }"
+          (click)="onCategoryChipClick('all')"
         >
           <span class="chip-icon">
             <svg
@@ -153,8 +151,7 @@
           <div
             class="category-chip"
             [class.active]="selectedCategory === category.slug"
-            [routerLink]="['/', currentLang, category.slug]"
-            [routerLinkActive]="'active'"
+            (click)="onCategoryChipClick(category.slug)"
           >
             <span
               class="chip-icon"
