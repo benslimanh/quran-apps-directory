@@ -487,6 +487,20 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
       });
   }
 
+  onCategoryChipClick(slug: string): void {
+    this.selectedCategory = slug;
+    if (slug === 'all') {
+      this.isSmartSearchActive = false;
+      this.filteredApps = this.apps;
+    } else {
+      this.filterByCategory(slug);
+    }
+    const route = slug === 'all'
+      ? ['/', this.currentLang]
+      : ['/', this.currentLang, slug];
+    this.router.navigate(route);
+  }
+
   filterByCategory(category: string) {
     this.selectedCategory = category.toLowerCase();
     if (this.isSmartSearchActive && this.searchQuery.trim()) {
@@ -570,7 +584,7 @@ export class AppListComponent implements OnInit, OnDestroy, AfterViewInit {
   startDragging(e: MouseEvent) {
     this.isDragging = true;
     this.categoriesContainer = (e.target as HTMLElement).closest(
-      ".categories-grid",
+      ".categories-chips",
     ) as HTMLElement;
     if (this.categoriesContainer) {
       this.startX = e.pageX - this.categoriesContainer.scrollLeft;
