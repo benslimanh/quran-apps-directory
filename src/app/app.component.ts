@@ -21,6 +21,7 @@ import { Category } from "./services/api.service";
 import { filter, Subject, takeUntil } from "rxjs";
 import { LucideAngularModule, Menu, X, Globe, Home, Info, Mail, Users, PlusCircle, ExternalLink, ChevronRight, Search } from 'lucide-angular';
 import { SafeHtmlPipe } from "./pipes/safe-html.pipe";
+import { DalilWidgetComponent } from "./components/dalil-widget/dalil-widget.component";
 
 // Icons globally registered in main.ts
 
@@ -43,6 +44,7 @@ import { SafeHtmlPipe } from "./pipes/safe-html.pipe";
     // ThemeToggleComponent,
     LucideAngularModule,
     SafeHtmlPipe,
+    DalilWidgetComponent,
   ],
 })
 export class AppComponent implements OnInit, AfterViewInit, OnDestroy {

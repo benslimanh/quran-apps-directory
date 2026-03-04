@@ -52,6 +52,11 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/track-submission/track-submission.component').then(m => m.TrackSubmissionComponent)
   },
   {
+    path: ':lang/assistant',
+    data: { title: 'Dalil Assistant' },
+    loadComponent: () => import('./pages/assistant/assistant.component').then(m => m.AssistantComponent)
+  },
+  {
     path: ':lang/search-comparison',
     data: { title: 'Search Comparison', hideChrome: true },
     loadComponent: () => import('./pages/search-comparison/search-comparison.component').then(m => m.SearchComparisonComponent)

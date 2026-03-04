@@ -1,0 +1,139 @@
+<!-- Floating trigger button -->
+<button
+  class="dalil-trigger"
+  [class.is-open]="isOpen"
+  (click)="togglePanel()"
+  [attr.aria-label]="'ASSISTANT.title' | translate">
+  <img
+    *ngIf="!isOpen"
+    src="assets/images/itqan-logo.svg"
+    alt="Dalil AI"
+    class="trigger-icon"
+    width="32"
+    height="32" />
+  <svg *ngIf="isOpen" class="trigger-close-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+    <line x1="18" y1="6" x2="6" y2="18"></line>
+    <line x1="6" y1="6" x2="18" y2="18"></line>
+  </svg>
+</button>
+
+<!-- Chat panel -->
+<div
+  class="dalil-panel"
+  [class.is-open]="isOpen"
+  [dir]="isRtl ? 'rtl' : 'ltr'">
+
+  <!-- Header -->
+  <div class="dalil-header">
+    <span class="dalil-header-title">{{ 'ASSISTANT.title' | translate }}</span>
+    <button class="dalil-header-close" (click)="closePanel()" aria-label="Close">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18"></line>
+        <line x1="6" y1="6" x2="18" y2="18"></line>
+      </svg>
+    </button>
+  </div>
+
+  <!-- Messages area -->
+  <div class="dalil-messages" #messagesContainer>
+
+    <!-- Welcome / empty state -->
+    <div *ngIf="messages.length === 0" class="dalil-welcome">
+      <img src="assets/images/itqan-logo.svg" alt="" class="welcome-logo" width="48" height="48">
+      <p class="welcome-text">{{ 'ASSISTANT.welcome' | translate }}</p>
+
+      <!-- Suggestion chips -->
+      <div *ngIf="suggestions.length > 0" class="suggestion-chips">
+        <button
+          *ngFor="let q of suggestions"
+          class="suggestion-chip"
+          (click)="useSuggestion(q)">
+          {{ currentLang === 'ar' ? q.question_ar : q.question_en }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Chat messages -->
+    <div *ngFor="let msg of messages; trackBy: trackByMessageIndex"
+         class="dalil-message"
+         [class.user-message]="msg.role === 'user'"
+         [class.assistant-message]="msg.role === 'assistant'">
+
+      <!-- User bubble -->
+      <div *ngIf="msg.role === 'user'" class="message-bubble user-bubble">
+        {{ msg.text }}
+      </div>
+
+      <!-- Assistant: loading -->
+      <div *ngIf="msg.role === 'assistant' && msg.isLoading" class="message-bubble assistant-bubble typing-indicator">
+        <span class="typing-text">{{ 'ASSISTANT.typing' | translate }}</span>
+        <span class="typing-dots">
+          <span class="dot"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </span>
+      </div>
+
+      <!-- Assistant: error -->
+      <div *ngIf="msg.role === 'assistant' && msg.isError" class="message-bubble assistant-bubble error-bubble">
+        <p>{{ msg.text }}</p>
+        <div class="error-actions">
+          <button class="btn-retry" (click)="retry()">{{ 'ASSISTANT.tryAgain' | translate }}</button>
+          <button class="btn-start-over" (click)="startOver()">{{ 'ASSISTANT.startOver' | translate }}</button>
+        </div>
+      </div>
+
+      <!-- Assistant: text + optional results -->
+      <div *ngIf="msg.role === 'assistant' && !msg.isLoading && !msg.isError" class="message-bubble assistant-bubble">
+        <p *ngIf="msg.text" class="assistant-text">{{ msg.text }}</p>
+
+        <!-- App result cards -->
+        <div *ngIf="msg.results && msg.results.length > 0" class="result-cards">
+          <button
+            *ngFor="let app of msg.results; trackBy: trackByAppId"
+            class="result-card"
+            (click)="onAppClick(app)">
+            <app-optimized-image
+              [src]="app.application_icon"
+              [alt]="getAppName(app)"
+              width="40"
+              height="40"
+              cssClass="result-card-icon"
+              loading="lazy">
+            </app-optimized-image>
+            <div class="result-card-info">
+              <span class="result-card-name">{{ getAppName(app) }}</span>
+              <span class="result-card-desc">{{ getAppDescription(app) }}</span>
+            </div>
+            <svg class="result-card-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="9 18 15 12 9 6"></polyline>
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Input area -->
+  <div class="dalil-input-area">
+    <input
+      #inputField
+      type="text"
+      class="dalil-input"
+      [placeholder]="'ASSISTANT.inputPlaceholder' | translate"
+      [(ngModel)]="userInput"
+      (keydown)="onKeydown($event)"
+      [disabled]="state === 'loading'"
+      autocomplete="off" />
+    <button
+      class="dalil-send-btn"
+      [disabled]="!userInput.trim() || state === 'loading'"
+      (click)="sendMessage()"
+      [attr.aria-label]="'Send'">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+        <line x1="22" y1="2" x2="11" y2="13"></line>
+        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+      </svg>
+    </button>
+  </div>
+</div>

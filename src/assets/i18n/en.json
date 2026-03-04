@@ -359,5 +359,16 @@
       "approved": "Approved",
       "rejected": "Rejected"
     }
+  },
+  "ASSISTANT": {
+    "title": "Ask Dalil AI",
+    "welcome": "Hi! I'm the Quran Apps Directory assistant. Type your question and I'll help you find the right app.",
+    "inputPlaceholder": "Write your question",
+    "typing": "Typing..",
+    "resultsHeader": "Here are the apps for you",
+    "noResults": "No apps matched. Try a different question.",
+    "error": "Something went wrong. Please try again.",
+    "tryAgain": "Try Again",
+    "startOver": "Start Over"
   }
 }
